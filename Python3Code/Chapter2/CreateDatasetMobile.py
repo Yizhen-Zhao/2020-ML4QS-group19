@@ -45,7 +45,8 @@ class CreateDataset:
         dataset = pd.read_csv(self.base_dir / file, skipinitialspace=True)
 
         # Convert timestamps to dates
-        dataset[timestamp_col] = pd.to_datetime(dataset[timestamp_col])
+        dataset[timestamp_col] = pd.to_datetime(dataset[timestamp_col], unit='s')
+
 
         # Create a table based on the times found in the dataset
         if self.data_table is None:
@@ -83,8 +84,8 @@ class CreateDataset:
         dataset = pd.read_csv(self.base_dir / file)
 
         # Convert timestamps to datetime.
-        dataset[start_timestamp_col] = pd.to_datetime(dataset[start_timestamp_col])
-        dataset[end_timestamp_col] = pd.to_datetime(dataset[end_timestamp_col])
+        dataset[start_timestamp_col] = pd.to_datetime(dataset[start_timestamp_col], unit='s')
+        dataset[end_timestamp_col] = pd.to_datetime(dataset[end_timestamp_col], unit='s')
 
         # Clean the event values in the dataset
         dataset[value_col] = dataset[value_col].apply(self.clean_name)
