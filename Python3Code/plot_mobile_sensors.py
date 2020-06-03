@@ -38,7 +38,7 @@ RESULT_FNAME = sys.argv[2] if len(sys.argv) > 2 else 'chapter2_phone_sensors.csv
 
 # Set a granularity (the discrete step size of our time series data). We'll use a course-grained granularity of one
 # instance per minute, and a fine-grained one with four instances per second.
-GRANULARITIES = [60000, 250]
+GRANULARITIES = [60000, 1000]
 
 # We can call Path.mkdir(exist_ok=True) to make any required directories if they don't already exist.
 [path.mkdir(exist_ok=True, parents=True) for path in [DATASET_PATH, RESULT_PATH]]
@@ -57,7 +57,7 @@ for milliseconds_per_instance in GRANULARITIES:
     # and aggregate the values per timestep by averaging the values
 
     dataset.add_numerical_dataset('Accelerometer.csv', 'Time', ['x','y','z'], 'avg', 'acc_mobile_') #units: (m/s^2)
-    dataset.add_numerical_dataset('Barometer.csv', 'Time', ['x'], 'avg', 'bar_mobile_') # unit: (hPa)
+    #dataset.add_numerical_dataset('Barometer.csv', 'Time', ['x'], 'avg', 'bar_mobile_') # unit: (hPa)
     dataset.add_numerical_dataset('Gyroscope.csv', 'Time', ['x','y','z'], 'avg', 'gyr_mobile_') #unit:(rad/s)
     dataset.add_numerical_dataset('Magnetometer.csv', 'Time', ['x','y','z'], 'avg', 'mag_mobile_') #unit:(uT/s)
     dataset.add_numerical_dataset('Proximity.csv', 'Time', ['distance'], 'avg', 'prox_mobile_') #unit:(cm/s)
@@ -85,9 +85,9 @@ for milliseconds_per_instance in GRANULARITIES:
     #                               ['like', 'like', 'like', 'like', 'like', 'like', 'like','like'],
     #                               ['line', 'line', 'line', 'line', 'line', 'line', 'points', 'points'])
 
-    DataViz.plot_dataset(dataset, ['acc_mobile_', 'bar_mobile_x', 'gyr_mobile_', 'mag_mobile_', 'prox_mobile_distance', 'label'],
-                                  ['like', 'like','like', 'like', 'like', 'like'],
-                                  ['line', 'points', 'line', 'line', 'points', 'points'])
+    DataViz.plot_dataset(dataset, ['acc_mobile_', 'gyr_mobile_', 'mag_mobile_', 'prox_mobile_distance', 'label'],
+                                  ['like', 'like', 'like', 'like', 'like'],
+                                  ['line', 'line', 'line', 'points', 'points'])
 
 
     # And print a summary of the dataset.
