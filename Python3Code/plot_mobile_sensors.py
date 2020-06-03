@@ -58,6 +58,11 @@ for milliseconds_per_instance in GRANULARITIES:
 
     dataset.add_numerical_dataset('Accelerometer.csv', 'Time', ['x','y','z'], 'avg', 'acc_mobile_') #units: (m/s^2)
     dataset.add_numerical_dataset('Barometer.csv', 'Time', ['x'], 'avg', 'bar_mobile_') # unit: (hPa)
+    dataset.add_numerical_dataset('Gyroscope.csv', 'Time', ['x','y','z'], 'avg', 'gyr_mobile_') #unit:(rad/s)
+    dataset.add_numerical_dataset('Magnetometer.csv', 'Time', ['x','y','z'], 'avg', 'mag_mobile_') #unit:(uT/s)
+    dataset.add_numerical_dataset('Proximity.csv', 'Time', ['distance'], 'avg', 'prox_mobile_') #unit:(cm/s)
+
+
 
     # TODO add the other datasets
 
@@ -80,9 +85,9 @@ for milliseconds_per_instance in GRANULARITIES:
     #                               ['like', 'like', 'like', 'like', 'like', 'like', 'like','like'],
     #                               ['line', 'line', 'line', 'line', 'line', 'line', 'points', 'points'])
 
-    DataViz.plot_dataset(dataset, ['acc_mobile_', 'bar_mobile_x', 'label'],
-                                  ['like', 'like','like'],
-                                  ['line', 'points', 'points'])
+    DataViz.plot_dataset(dataset, ['acc_mobile_', 'bar_mobile_x', 'gyr_mobile_', 'mag_mobile_', 'prox_mobile_distance', 'label'],
+                                  ['like', 'like','like', 'like', 'like', 'like'],
+                                  ['line', 'points', 'line', 'line', 'points', 'points'])
 
 
     # And print a summary of the dataset.
