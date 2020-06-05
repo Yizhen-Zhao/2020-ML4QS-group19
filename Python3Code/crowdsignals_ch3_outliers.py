@@ -60,8 +60,8 @@ def main():
         # And try out all different approaches. Note that we have done some optimization
         # of the parameter values for each of the approaches by visual inspection.
         
-        dataset = OutlierDistr.chauvenet(dataset, col)
-        DataViz.plot_binary_outliers(dataset, col, col + '_outlier')
+        # dataset = OutlierDistr.chauvenet(dataset, col)
+        # DataViz.plot_binary_outliers(dataset, col, col + '_outlier')
         dataset = OutlierDistr.mixture_model(dataset, col)
         DataViz.plot_dataset(dataset, [col, col + '_mixture'], ['exact','exact'], ['line', 'points'])
         

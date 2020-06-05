@@ -61,7 +61,7 @@ class DistributionBasedOutlierDetection:
         
         #change components to observe difference - Yizhen
         #g = GaussianMixture(n_components=3, max_iter=100, n_init=1)  #n_components=3, the original one
-        g = GaussianMixture(n_components=8, max_iter=100, n_init=1)  #n_components=8
+        g = GaussianMixture(n_components=6, max_iter=100, n_init=1)  #n_components=6
         
         reshaped_data = np.array(data.values.reshape(-1,1))
         g.fit(reshaped_data)
