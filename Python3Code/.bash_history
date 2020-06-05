@@ -1,0 +1,11 @@
+ls
+python3 crowdsignals_ch3_outliers.py
+ls
+python3 crowdsignals_ch3_outliers.py
+python3 crowdsignals_ch3_outliers.py
+ls
+python3 crowdsignals_ch3_outliers.py
+python3 crowdsignals_ch3_outliers.py
+python3 crowdsignals_ch3_outliers.py
+python3 crowdsignals_ch3_outliers.py
+python3 crowdsignals_ch3_outliers.py

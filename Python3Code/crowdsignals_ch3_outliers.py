@@ -34,7 +34,7 @@ def main():
         raise e
 
     # We'll create an instance of our visualization class to plot the results.
-    DataViz = VisualizeDataset(__file__)
+    DataViz = VisualizeDataset()
 
     # Compute the number of milliseconds covered by an instance using the first two rows.
     milliseconds_per_instance = (dataset.index[1] - dataset.index[0]).microseconds/1000
@@ -46,36 +46,42 @@ def main():
 
     # Create the outlier classes.
     OutlierDistr = DistributionBasedOutlierDetection()
-    OutlierDist = DistanceBasedOutlierDetection()
+    # OutlierDist = DistanceBasedOutlierDetection()
 
     # And investigate the approaches for all relevant attributes.
     for col in outlier_columns:
+
+        
+        # dataset_outliers_sdb = OutlierDist.simple_distance_based(copy.deepcopy(dataset), [col], 'euclidean', 0.10, 0.99)
+        # DataViz.plot_binary_outliers(dataset_outliers_sdb, col, 'simple_dist_outlier')
 
         print(f"Applying outlier criteria for column {col}")
 
         # And try out all different approaches. Note that we have done some optimization
         # of the parameter values for each of the approaches by visual inspection.
+        
         dataset = OutlierDistr.chauvenet(dataset, col)
         DataViz.plot_binary_outliers(dataset, col, col + '_outlier')
         dataset = OutlierDistr.mixture_model(dataset, col)
         DataViz.plot_dataset(dataset, [col, col + '_mixture'], ['exact','exact'], ['line', 'points'])
+        
         # This requires:
         # n_data_points * n_data_points * point_size =
         # 31839 * 31839 * 32 bits = ~4GB available memory
 
-        try:
-            dataset = OutlierDist.simple_distance_based(dataset, [col], 'euclidean', 0.10, 0.99)
-            DataViz.plot_binary_outliers(dataset, col, 'simple_dist_outlier')
-        except MemoryError as e:
-            print('Not enough memory available for simple distance-based outlier detection...')
-            print('Skipping.')
+        # try:
+        #     dataset = OutlierDist.simple_distance_based(dataset, [col], 'euclidean', 0.10, 0.99)
+        #     DataViz.plot_binary_outliers(dataset, col, 'simple_dist_outlier')
+        # except MemoryError as e:
+        #     print('Not enough memory available for simple distance-based outlier detection...')
+        #     print('Skipping.')
 
-        try:
-            dataset = OutlierDist.local_outlier_factor(dataset, [col], 'euclidean', 5)
-            DataViz.plot_dataset(dataset, [col, 'lof'], ['exact','exact'], ['line', 'points'])
-        except MemoryError as e:
-            print('Not enough memory available for lof...')
-            print('Skipping.')
+        # try:
+        #     dataset = OutlierDist.local_outlier_factor(dataset, [col], 'euclidean', 2)
+        #     DataViz.plot_dataset(dataset, [col, 'lof'], ['exact','exact'], ['line', 'points'])
+        # except MemoryError as e:
+        #     print('Not enough memory available for lof...')
+        #     print('Skipping.')
 
         # Remove all the stuff from the dataset again.
         cols_to_remove = [col + '_outlier', col + '_mixture', 'simple_dist_outlier', 'lof']
