@@ -44,7 +44,7 @@ milliseconds_per_instance = (dataset.index[1] - dataset.index[0]).microseconds/1
 
 # Set the window sizes to the number of instances representing 5 seconds, 30 seconds and 5 minutes
 window_sizes = [int(float(5000)/milliseconds_per_instance), int(float(0.5*60000)/milliseconds_per_instance), int(float(5*60000)/milliseconds_per_instance)]
-
+#
 NumAbs = NumericalAbstraction()
 dataset_copy = copy.deepcopy(dataset)
 for ws in window_sizes:
