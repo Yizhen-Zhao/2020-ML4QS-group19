@@ -63,7 +63,7 @@ class PrepareDatasetForLearning:
         # Filer NaN is desired and those for which we cannot determine the class should be removed.
         if filter:
             dataset = dataset.dropna()
-            dataset = dataset[dataset['class'] != self.default_label]
+            # dataset = dataset[dataset['class'] != self.default_label]
 
         # The features are the ones not in the class label.
         features = [dataset.columns.get_loc(x) for x in dataset.columns if x not in class_labels]
