@@ -1,0 +1,10 @@
+sensor_type,device_type,label,label_start,label_start_datetime,label_end,label_end_datetime
+interval_label,smartphone,Walking,0,16/06/2020 11:00:00,510,16/06/2020 11:08:30
+interval_label,smartphone,Running,511,16/06/2020 11:08:31,1100,16/06/2020 11:18:31
+interval_label,smartphone,Sitting,1101,16/06/2020 11:18:32,1476,16/06/2020 11:24:47
+interval_label,smartphone,Lunges,1477,16/06/2020 11:24:48,1958,16/06/2020 11:32:49
+interval_label,smartphone,Standing,1959,16/06/2020 11:32:50,2334,16/06/2020 11:39:05
+interval_label,smartphone,Pushups,2335,16/06/2020 11:39:06,2745,16/06/2020 11:45:56
+interval_label,smartphone,Sitting,2746,16/06/2020 11:45:57,3107,16/06/2020 11:51:58
+interval_label,smartphone,Pullups,3108,16/06/2020 11:51:59,3180,16/06/2020 11:53:11
+interval_label,smartphone,Dance,3181,16/06/2020 11:53:12,3419,16/06/2020 11:57:10
