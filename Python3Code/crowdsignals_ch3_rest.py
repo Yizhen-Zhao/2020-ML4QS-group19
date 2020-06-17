@@ -65,7 +65,6 @@ DataViz.plot_dataset(kalman_dataset, ['acc_phone_x', 'acc_phone_x_kalman'], ['ex
 # We ignore the Kalman filter output for now...
 
 # Let us apply a lowpass filter and reduce the importance of the data above 1.5 Hz
-
 LowPass = LowPassFilter()
 
 # Determine the sampling frequency.

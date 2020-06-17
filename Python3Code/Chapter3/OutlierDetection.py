@@ -30,8 +30,8 @@ class DistributionBasedOutlierDetection:
         N = len(data_table.index)
         
         #change c to observe difference - Yizhen
-        #criterion = 1.0/(2*N)  #c = 2, the original one
-        criterion = 1.0/(9*N)  #c = 9
+        criterion = 1.0/(2*N)  #c = 2, the original one
+        #criterion = 1.0/(9*N)  #c = 9
 
         # Consider the deviation for the data points.
         deviation = abs(data_table[col] - mean)/std
@@ -60,8 +60,8 @@ class DistributionBasedOutlierDetection:
         data = data_table[data_table[col].notnull()][col]
         
         #change components to observe difference - Yizhen
-        #g = GaussianMixture(n_components=3, max_iter=100, n_init=1)  #n_components=3, the original one
-        g = GaussianMixture(n_components=6, max_iter=100, n_init=1)  #n_components=6
+        g = GaussianMixture(n_components=3, max_iter=100, n_init=1)  #n_components=3, the original one
+        #g = GaussianMixture(n_components=6, max_iter=100, n_init=1)  #n_components=6
         
         reshaped_data = np.array(data.values.reshape(-1,1))
         g.fit(reshaped_data)
