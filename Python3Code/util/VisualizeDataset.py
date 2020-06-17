@@ -60,11 +60,11 @@ class VisualizeDataset:
 
         f.subplots_adjust(hspace=0.4)
 
-        xfmt = md.DateFormatter('%H:%M')
+        # xfmt = md.DateFormatter('%H:%M')
 
         # Pass through the columns specified.
         for i in range(0, len(columns)):
-            xar[i].xaxis.set_major_formatter(xfmt)
+            # xar[i].xaxis.set_major_formatter(xfmt)
             xar[i].set_prop_cycle(color=['b', 'g', 'r', 'c', 'm', 'y', 'k'])
             # if a column match is specified as 'exact', select the column name(s) with an exact match.
             # If it's specified as 'like', select columns containing the name.
@@ -154,9 +154,9 @@ class VisualizeDataset:
         data_table.loc[:,:] = data_table.dropna(axis=0, subset=[col, outlier_col])
         data_table.loc[:,outlier_col] = data_table[outlier_col].astype('bool')
         f, xar = plt.subplots()
-        xfmt = md.DateFormatter('%H:%M')
-        xar.xaxis.set_major_formatter(xfmt)
-        plt.xlabel('time')
+        # xfmt = md.DateFormatter('%H:%M')
+        # xar.xaxis.set_major_formatter(xfmt)
+        plt.xlabel('index')
         plt.ylabel('value')
         # Plot data points that are outliers in red, and non outliers in blue.
         xar.plot(data_table.index[data_table[outlier_col]], data_table[col][data_table[outlier_col]], 'r+')
@@ -206,7 +206,7 @@ class VisualizeDataset:
     def plot_clusters_3d(self, data_table, data_cols, cluster_col, label_cols):
 
         color_index = 0
-        point_displays = ['+', 'x', '*', 'd', 'o', 's', '<', '>']
+        point_displays = ['+', 's', '*', 'd', 'o', 'x', '<', '>']
 
         # Determine the number of clusters:
         clusters = data_table[cluster_col].unique()
@@ -241,6 +241,61 @@ class VisualizeDataset:
             color_index += 1
 
         plt.legend(handles, labels, fontsize='xx-small', numpoints=1)
+        self.save(plt)
+        plt.show()
+    
+    def plot_clusters_3d_onelabel(self, data_table, data_cols, cluster_col, label, amountOfValues):
+
+        color_index = 0
+        point_displays = ['+', 's', '*', 'd', 'o', 'x', '<', '>']
+
+        # Determine the number of clusters:
+        clusters = data_table[cluster_col].unique()
+        # labels = label_cols
+
+        # Get the possible labels, assuming 1 or more label columns with binary values.
+        # for i in range(0, len(label_cols)):
+        #     labels.extend([name for name in list(data_table.columns) if label_cols[i] == name[0:len(label_cols[i])]])
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        handles = []
+
+        # Plot clusters individually with a certain color.
+        for cluster in clusters:
+            marker_index = 0
+            # And make sure the points of a label receive the right marker type.
+            rows = data_table.loc[(data_table[cluster_col] == cluster) & (data_table[label] == 0)]
+            # Now we come to the assumption that there are three data_cols specified:
+            if not len(data_cols) == 3:
+                return
+            plot_color = self.colors[color_index%len(self.colors)]
+            plot_marker = point_displays[marker_index%len(point_displays)]
+            pt = ax.scatter(rows[data_cols[0]], rows[data_cols[1]], rows[data_cols[2]], c=plot_color, marker=plot_marker)
+            if color_index == 0:
+                handles.append(pt)
+            ax.set_xlabel(data_cols[0])
+            ax.set_ylabel(data_cols[1])
+            ax.set_zlabel(data_cols[2])
+            marker_index += 1
+            
+            rows = data_table.loc[(data_table[cluster_col] == cluster) & (data_table[label] > 0)]
+            # Now we come to the assumption that there are three data_cols specified:
+            if not len(data_cols) == 3:
+                return
+            plot_color = self.colors[color_index%len(self.colors)]
+            plot_marker = point_displays[marker_index%len(point_displays)]
+            pt = ax.scatter(rows[data_cols[0]], rows[data_cols[1]], rows[data_cols[2]], c=plot_color, marker=plot_marker)
+            if color_index == 0:
+                handles.append(pt)
+            ax.set_xlabel(data_cols[0])
+            ax.set_ylabel(data_cols[1])
+            ax.set_zlabel(data_cols[2])
+            marker_index += 1
+            
+            color_index += 1
+
+        plt.legend(handles, ['no heart disease', 'heart disease'], fontsize='xx-small', numpoints=1)
         self.save(plt)
         plt.show()
 
