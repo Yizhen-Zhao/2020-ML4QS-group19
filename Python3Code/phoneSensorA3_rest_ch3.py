@@ -46,7 +46,7 @@ DataViz.plot_imputed_values(dataset, ['original', 'mean', 'interpolation'], 'acc
 # Now, let us carry out that operation over all columns except for the label.
 
 for col in [c for c in dataset.columns if not 'label' in c]:
-    dataset = MisVal.impute_mean(dataset, col)
+    dataset = MisVal.impute_interpolate(dataset, col)
 
 
 
