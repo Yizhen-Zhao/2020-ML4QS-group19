@@ -32,7 +32,7 @@ RESULT_FNAME = 'HA-classification_result.csv'
 EXPORT_TREE_PATH = Path('./figures/HA_classification2/')
 
 # Next, we declare the parameters we'll use in the algorithms.
-N_FORWARD_SELECTION = 10
+N_FORWARD_SELECTION = 12
 
 try:
     dataset = pd.read_csv(DATA_PATH / DATASET_FNAME, index_col=0)
@@ -53,7 +53,7 @@ DataViz = VisualizeDataset(__file__)
 
 prepare = PrepareDatasetForLearning()
 
-train_X, test_X, train_y, test_y = prepare.split_single_dataset_classification(dataset, ['no-hd'], 'like', 0.7, filter=True, temporal=False)
+train_X, test_X, train_y, test_y = prepare.split_single_dataset_classification(dataset, ['hd'], 'dgdf', 0.7, filter=True, temporal=False)
 
 print('Training set length is: ', len(train_X.index))
 print('Test set length is: ', len(test_X.index))
@@ -77,22 +77,21 @@ features_after_chapter_5 = list(set().union(basic_features, cluster_features))
 
 # First, let us consider the performance over a selection of features:
 
-fs = FeatureSelectionClassification()
+# fs = FeatureSelectionClassification()
 
-features, ordered_features, ordered_scores = fs.forward_selection(N_FORWARD_SELECTION,
-                                                                  train_X[basic_features], train_y)
-print(ordered_scores)
-print(ordered_features)
+# features, ordered_features, ordered_scores = fs.forward_selection(N_FORWARD_SELECTION,
+#                                                                   train_X[basic_features], train_y)
+# print(ordered_scores)
+# print(ordered_features)
 
-DataViz.plot_xy(x=[range(1, N_FORWARD_SELECTION+1)], y=[ordered_scores],
-                xlabel='number of features', ylabel='accuracy')
+# DataViz.plot_xy(x=[range(1, N_FORWARD_SELECTION+1)], y=[ordered_scores],
+#                 xlabel='number of features', ylabel='accuracy')
+# print(features)
 
 # # Based on the plot we select the top 10 features (note: slightly different compared to Python 2, we use
 # # those feartures here).
 
-# selected_features = ['acc_phone_y_freq_0.0_Hz_ws_40', 'press_phone_pressure_temp_mean_ws_120', 'gyr_phone_x_temp_std_ws_120',
-#                      'mag_watch_y_pse', 'mag_phone_z_max_freq', 'gyr_watch_y_freq_weighted', 'gyr_phone_y_freq_1.0_Hz_ws_40',
-#                      'acc_phone_x_freq_1.9_Hz_ws_40', 'mag_watch_z_freq_0.9_Hz_ws_40', 'acc_watch_y_freq_0.5_Hz_ws_40']
+selected_features = ['thal', 'oldpeak', 'exang', 'cp', 'chol']
 
 # Let us first study the impact of regularization and model complexity: does regularization prevent overfitting?
 
@@ -110,6 +109,7 @@ N_REPEATS_NN = 20
 #     performance_tr = 0
 #     performance_te = 0
 #     for i in range(0, N_REPEATS_NN):
+#         print("iteration %d" % i)
 
 #         class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.feedforward_neural_network(
 #             train_X, train_y,
@@ -123,7 +123,7 @@ N_REPEATS_NN = 20
 #     performance_test.append(performance_te/N_REPEATS_NN)
 
 # DataViz.plot_xy(x=[reg_parameters, reg_parameters], y=[performance_training, performance_test], method='semilogx',
-#                 xlabel='regularization parameter value', ylabel='accuracy', ylim=[0.95, 1.01],
+#                 xlabel='regularization parameter value', ylabel='accuracy',
 #                 names=['training', 'test'], line_styles=['r-', 'b:'])
 
 # Second, let us consider the influence of certain parameter settings for the tree model. (very related to the
@@ -149,13 +149,14 @@ N_REPEATS_NN = 20
 # So yes, it is important :) Therefore we perform grid searches over the most important parameters, and do so by means
 # of cross validation upon the training set.
 
-possible_feature_sets = [basic_features, features_after_chapter_5]
-feature_names = ['initial set', 'Chapter 5']
-N_KCV_REPEATS = 1
+possible_feature_sets = [basic_features, selected_features]
+feature_names = ['initial set', 'Selected features']
+N_KCV_REPEATS = 5
 
 scores_over_all_algs = []
 
 for i in range(0, len(possible_feature_sets)):
+    print("feature set %d" % i)
     selected_train_X = train_X[possible_feature_sets[i]]
     selected_test_X = test_X[possible_feature_sets[i]]
 
@@ -169,49 +170,56 @@ for i in range(0, len(possible_feature_sets)):
     performance_te_svm = 0
 
     for repeat in range(0, N_KCV_REPEATS):
+        print("repeat nr %d" % repeat)
         class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.feedforward_neural_network(
             selected_train_X, train_y, selected_test_X, gridsearch=True
         )
+        print("finished ffnn ")
+        
         performance_tr_nn += eval.accuracy(train_y, class_train_y)
         performance_te_nn += eval.accuracy(test_y, class_test_y)
 
         class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.random_forest(
             selected_train_X, train_y, selected_test_X, gridsearch=True
         )
+        print("finished RF ")
         performance_tr_rf += eval.accuracy(train_y, class_train_y)
         performance_te_rf += eval.accuracy(test_y, class_test_y)
 
-        class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.support_vector_machine_with_kernel(
-            selected_train_X, train_y, selected_test_X, gridsearch=True
-        )
-        performance_tr_svm += eval.accuracy(train_y, class_train_y)
-        performance_te_svm += eval.accuracy(test_y, class_test_y)
+        # class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.support_vector_machine_with_kernel(
+        #     selected_train_X, train_y, selected_test_X, gridsearch=True
+        # )
+        # print("finished svm ")
+        # performance_tr_svm += eval.accuracy(train_y, class_train_y)
+        # performance_te_svm += eval.accuracy(test_y, class_test_y)
 
 
     overall_performance_tr_nn = performance_tr_nn/N_KCV_REPEATS
     overall_performance_te_nn = performance_te_nn/N_KCV_REPEATS
     overall_performance_tr_rf = performance_tr_rf/N_KCV_REPEATS
     overall_performance_te_rf = performance_te_rf/N_KCV_REPEATS
-    overall_performance_tr_svm = performance_tr_svm/N_KCV_REPEATS
-    overall_performance_te_svm = performance_te_svm/N_KCV_REPEATS
-
+    overall_performance_tr_svm = 0
+    overall_performance_te_svm = 0
     # And we run our deterministic classifiers:
 
     class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.k_nearest_neighbor(
         selected_train_X, train_y, selected_test_X, gridsearch=True
     )
+    print("finished knn ")
     performance_tr_knn = eval.accuracy(train_y, class_train_y)
     performance_te_knn = eval.accuracy(test_y, class_test_y)
 
     class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.decision_tree(
         selected_train_X, train_y, selected_test_X, gridsearch=True
     )
+    print("finished dt ")
     performance_tr_dt = eval.accuracy(train_y, class_train_y)
     performance_te_dt = eval.accuracy(test_y, class_test_y)
 
     class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.naive_bayes(
         selected_train_X, train_y, selected_test_X
     )
+    print("finished NB ")
     performance_tr_nb = eval.accuracy(train_y, class_train_y)
     performance_te_nb = eval.accuracy(test_y, class_test_y)
 
@@ -231,7 +239,7 @@ DataViz.plot_performances_classification(['NN', 'RF', 'SVM', 'KNN', 'DT', 'NB'],
 
 class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.decision_tree(train_X[selected_features], train_y, test_X[selected_features],
                                                                                            gridsearch=True,
-                                                                                           print_model_details=True, export_tree_path=EXPORT_TREE_PATH)
+                                                                                           print_model_details=True)
 
 class_train_y, class_test_y, class_train_prob_y, class_test_prob_y = learner.random_forest(
     train_X[selected_features], train_y, test_X[selected_features],
