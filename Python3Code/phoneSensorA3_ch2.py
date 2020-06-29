@@ -80,7 +80,7 @@ for milliseconds_per_instance in GRANULARITIES:
 
     # Boxplot
     DataViz.plot_dataset_boxplot(dataset, ['acc_mobile_x','acc_mobile_y','acc_mobile_z'])
-    DataViz.plot_dataset_boxplot(dataset, ['gyr_mobile_x', 'gyr_mobile_y', 'gyr_mobile_z'])
+    #DataViz.plot_dataset_boxplot(dataset, ['gyr_mobile_x', 'gyr_mobile_y', 'gyr_mobile_z'])
 
     # Plot all data
     # DataViz.plot_dataset(dataset, ['acc_', 'gyr_', 'hr_watch_rate', 'light_phone_lux', 'mag_', 'press_phone_', 'label'],
